@@ -15,7 +15,9 @@ app.use(cors());
     
 client.connect(err => {
     const appointmentsCollection = client.db(`${process.env.DB_NAME}`).collection("category");
+    const patientsCollection = client.db(`${process.env.DB_NAME}`).collection("patients");
 
+    // ADD ALL APPOINTMENTS AT THE DATABASE
     app.post('/addAppointments', (req, res) => {
         appointmentsCollection.insertMany(req.body)
         .then(result => {
@@ -23,26 +25,34 @@ client.connect(err => {
         })
     })
 
+    // READ ALL APPOINTMENTS
     app.get('/loadAppointments', (req, res) => {
         appointmentsCollection.find({})
         .toArray((error, documents) => {
             res.send(documents);
         })
     })
-    
+
+    // READ APPOINTMENT BY DAYNAMIC KEY
     app.get('/appointment/:patinetkey', (req, res) => {
         appointmentsCollection.find({key: req.params.patinetkey})
         .toArray((error, documents) => {
             res.send(documents[0]);
         })
     })
+
+    //INSERT PATIENT INFORMAITON AT THE DATABASE
+    app.post('/patient', (req, res) => {
+        patientsCollection.insertOne(req.body)
+        .then(result => {
+            res.send(result.insertedCount > 0);
+        })
+    })
 });
 
 
-
-
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('Hello Doctor Chamber!');
 })
 
 app.listen(port, () => {
