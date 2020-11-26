@@ -33,11 +33,11 @@ client.connect(err => {
         })
     })
 
-    // READ APPOINTMENT BY DAYNAMIC KEY
-    app.get('/appointment/:patinetkey', (req, res) => {
-        appointmentsCollection.find({key: req.params.patinetkey})
+    //LOAD All PATIENTS
+    app.get('/allPatients', (req, res) => {
+        patientsCollection.find({})
         .toArray((error, documents) => {
-            res.send(documents[0]);
+            res.send(documents);
         })
     })
 
@@ -48,6 +48,16 @@ client.connect(err => {
             res.send(result.insertedCount > 0);
         })
     })
+
+    //READ PATIENT INFORMAITON FROM THE DATABASE
+    app.post('/appointmentByDate', (req, res) => {
+        const date = req.body;
+        patientsCollection.find({date: date.date})
+        .toArray((error, documents) => {
+            res.send(documents)
+        })
+    })
+
 });
 
 
